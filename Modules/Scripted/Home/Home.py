@@ -33,11 +33,6 @@ class Home(ScriptedLoadableModule):
         self.parent.helpText += self.getDefaultModuleDocumentationLink()
         self.parent.acknowledgementText = """..."""  # replace with organization, grant and thanks.
 
-        # Create the Home module's widget representation just to ensure that HomeWidget.setup
-        # gets called and the styling and UI modifications are run.
-        def touch_widget_representation():
-                slicer.modules.home.widgetRepresentation()
-        slicer.app.connect("startupCompleted()", touch_widget_representation)
 
 class HomeWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     """Uses ScriptedLoadableModuleWidget base class, available at:

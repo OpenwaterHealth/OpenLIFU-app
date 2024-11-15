@@ -37,7 +37,7 @@ set(Slicer_ORGANIZATION_DOMAIN "openwater.health")
 set(Slicer_ORGANIZATION_NAME   "Open Water Internet, Inc.")
 
 # Default home and favorite modules
-set(Slicer_DEFAULT_HOME_MODULE "OpenLIFUHome")
+set(Slicer_DEFAULT_HOME_MODULE "Home")
 set(Slicer_DEFAULT_FAVORITE_MODULES "Data, Volumes, Models, Transforms, Markups, SegmentEditor")
 
 # Configure SuperBuild
@@ -164,7 +164,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/OpenwaterHealth/SlicerOpenLIFU.git
- GIT_TAG        9564cc8463734cd55683d3f90b61117758ff58c0
+ GIT_TAG        0bdd8b350a10c84c722b9e05257bc0dfd93864e6
  GIT_PROGRESS   1
  QUIET
  )
