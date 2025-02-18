@@ -39,6 +39,12 @@ class Home(ScriptedLoadableModule):
             openLIFUHomeLogic.start_guided_mode()
         slicer.app.connect("startupCompleted()", start_guided_mode)
 
+        # Force start user account mode
+        def start_user_account_mode():
+            openLIFULoginLogic = slicer.util.getModuleLogic("OpenLIFULogin")
+            openLIFULoginLogic.start_user_account_mode()
+        slicer.app.connect("startupCompleted()", start_user_account_mode)
+
 class HomeWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     """Uses ScriptedLoadableModuleWidget base class, available at:
     https://github.com/Slicer/Slicer/blob/main/Base/Python/slicer/ScriptedLoadableModule.py
