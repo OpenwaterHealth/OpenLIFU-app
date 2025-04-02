@@ -12,6 +12,7 @@ set(MODULE_PYTHON_RESOURCES
   Resources/UI/${MODULE_NAME}.ui
   Resources/UI/Settings.ui
   Resources/Home.qss
+  Resources/openlifu-database/init_database_helper.py
   )
 
 slicerFunctionAddPythonQtResources(MODULE_PYTHON_QRC_RESOURCES
