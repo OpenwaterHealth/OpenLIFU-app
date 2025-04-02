@@ -1,3 +1,8 @@
+import os
+import sys
+import shutil
+from pathlib import Path
+
 import qt
 
 import slicer
@@ -12,7 +17,6 @@ import SlicerCustomAppUtilities
 
 # Import to ensure the files are available through the Qt resource system
 from Resources import HomeResources
-
 
 class Home(ScriptedLoadableModule):
     """The home module allows to orchestrate and style the overall application workflow.
@@ -44,6 +48,12 @@ class Home(ScriptedLoadableModule):
             openLIFULoginLogic = slicer.util.getModuleLogic("OpenLIFULogin")
             openLIFULoginLogic.start_user_account_mode()
         slicer.app.connect("startupCompleted()", start_user_account_mode)
+
+        def ensure_database_exists(self):
+            db_destination = HomeLogic.get_database_destination()
+            db_source = self.resourcePath(os.path.join("openlifu-database", "empty_db"))
+            HomeLogic.copy_preinitialized_database(str(db_destination), str(db_source))
+        slicer.app.connect("startupCompleted()", ensure_database_exists(self))
 
 class HomeWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     """Uses ScriptedLoadableModuleWidget base class, available at:
@@ -175,3 +185,34 @@ class HomeLogic(ScriptedLoadableModuleLogic):
         # slicer.util.findChild(sliceWidget, "ViewLabel").visible = False
         # slicer.util.findChild(sliceWidget, "FitToWindowToolButton").visible = False
         # slicer.util.findChild(sliceWidget, "SliceOffsetSlider").spinBoxVisible = False
+
+    @staticmethod
+    def get_database_destination():
+        if sys.platform.startswith("win"):
+            return Path(os.environ["APPDATA"]) / "OpenLIFU-app" / "db"
+        elif sys.platform.startswith("darwin"):
+            return Path.home() / "Library" / "Application Support" / "OpenLIFU-app" / "db"
+        elif sys.platform.startswith("linux"):
+            return Path.home() / ".local" / "share" / "OpenLIFU-app" / "db"
+        else:
+            raise NotImplementedError("Unsupported platform")
+
+    @staticmethod
+    def copy_preinitialized_database(destination, source):
+        db_destination = Path(destination)
+        db_source = Path(source)
+        db_destination.parent.mkdir(parents=True, exist_ok=True)
+
+        if not db_destination.exists():
+            shutil.copytree(db_source, db_destination)
+
+        # Set permissions
+        if os.name == "nt":
+            os.system(f'icacls "{db_destination}" /grant Everyone:F /T /C')
+        else:
+            for root, dirs, files in os.walk(db_destination):
+                for d in dirs:
+                    os.chmod(Path(root) / d, 0o755)
+                for f in files:
+                    os.chmod(Path(root) / f, 0o644)
+            os.chmod(db_destination, 0o755)
