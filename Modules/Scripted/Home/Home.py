@@ -1,7 +1,5 @@
-import os
-import sys
-import shutil
 from pathlib import Path
+import os
 
 import qt
 
@@ -49,11 +47,42 @@ class Home(ScriptedLoadableModule):
             openLIFULoginLogic.start_user_account_mode()
         slicer.app.connect("startupCompleted()", start_user_account_mode)
 
-        def ensure_database_exists(self):
-            db_destination = HomeLogic.get_database_destination()
-            db_source = self.resourcePath(os.path.join("openlifu-database", "empty_db"))
-            HomeLogic.copy_preinitialized_database(str(db_destination), str(db_source))
-        slicer.app.connect("startupCompleted()", ensure_database_exists(self))
+        def ensure_database_exists():
+            openLIFUDatabaseLogic = slicer.util.getModuleLogic("OpenLIFUDatabase")
+
+            # 1) Check if the path was set to something. If the setting points
+            # to a directory that exists and is an openlifu database, we don't
+            # do anything.
+            qsettings = qt.QSettings()
+            qsettings.beginGroup("OpenLIFU")
+            db_setting = qsettings.value("databaseDirectory", "")
+            qsettings.endGroup()
+            
+            db_setting = Path(db_setting)
+            if db_setting.exists() and db_setting.is_dir() and openLIFUDatabaseLogic.path_is_openlifu_database_root(db_setting):
+                return
+
+            # 2) Check if the default location has a database. If it does, we
+            # set the qsetting, back to default, and then we return
+            db_default = openLIFUDatabaseLogic.get_database_destination()
+            if db_default.exists() and db_default.is_dir() and openLIFUDatabaseLogic.path_is_openlifu_database_root(db_default):
+                qsettings.beginGroup("OpenLIFU")
+                qsettings.setValue("databaseDirectory", str(db_default))
+                qsettings.endGroup()
+                return
+
+            # 3) If nothing above is satisfied, we ask if the user wants to
+            # create a new database directory (in the default location)
+            reply = qt.QMessageBox.question(slicer.util.mainWindow(), "Initialize Confirmation", f"An openlifu database was not found in {db_default}.\nWould you like to initialize one?", qt.QMessageBox.Yes | qt.QMessageBox.No)
+            if reply == qt.QMessageBox.No:
+                return  # don't do anything. The admin can do things themself
+
+            openLIFUDatabaseLogic.copy_preinitialized_database(db_default)
+            qsettings.beginGroup("OpenLIFU")
+            qsettings.setValue("databaseDirectory", str(db_default))
+            qsettings.endGroup()
+
+        slicer.app.connect("startupCompleted()", ensure_database_exists)
 
 class HomeWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     """Uses ScriptedLoadableModuleWidget base class, available at:
@@ -185,34 +214,3 @@ class HomeLogic(ScriptedLoadableModuleLogic):
         # slicer.util.findChild(sliceWidget, "ViewLabel").visible = False
         # slicer.util.findChild(sliceWidget, "FitToWindowToolButton").visible = False
         # slicer.util.findChild(sliceWidget, "SliceOffsetSlider").spinBoxVisible = False
-
-    @staticmethod
-    def get_database_destination():
-        if sys.platform.startswith("win"):
-            return Path(os.environ["APPDATA"]) / "OpenLIFU-app" / "db"
-        elif sys.platform.startswith("darwin"):
-            return Path.home() / "Library" / "Application Support" / "OpenLIFU-app" / "db"
-        elif sys.platform.startswith("linux"):
-            return Path.home() / ".local" / "share" / "OpenLIFU-app" / "db"
-        else:
-            raise NotImplementedError("Unsupported platform")
-
-    @staticmethod
-    def copy_preinitialized_database(destination, source):
-        db_destination = Path(destination)
-        db_source = Path(source)
-        db_destination.parent.mkdir(parents=True, exist_ok=True)
-
-        if not db_destination.exists():
-            shutil.copytree(db_source, db_destination)
-
-        # Set permissions
-        if os.name == "nt":
-            os.system(f'icacls "{db_destination}" /grant Everyone:F /T /C')
-        else:
-            for root, dirs, files in os.walk(db_destination):
-                for d in dirs:
-                    os.chmod(Path(root) / d, 0o755)
-                for f in files:
-                    os.chmod(Path(root) / f, 0o644)
-            os.chmod(db_destination, 0o755)
