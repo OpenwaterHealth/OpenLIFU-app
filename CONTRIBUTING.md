@@ -8,7 +8,8 @@ There are many ways to contribute to OpenLIFU.
 
 ## Commit and pull request expectations
 
-- Every commit should reference the issue number with which it is associated.
+- Every commit should reference the issue number with which it is associated
+  - (with exceptions when software requirements traceability is guaranteed, such as for version bumps of software that is itself traceable)
 - Commits should be reasonably granular and semantically atomic.
 - Pull requests should not be squashed upon merging.
 
