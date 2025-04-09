@@ -120,6 +120,13 @@ class HomeWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
         # Apply style
         self.applyApplicationStyle()
 
+        # Hide widgets that should be hidden in guided mode
+        # This shouldn't need to be done because we already enabled guided mode above!
+        # See https://github.com/OpenwaterHealth/OpenLIFU-app/issues/20
+        # This is a terrible way to fix it, but it's our patch solution for now.
+        # For me, even setting this timer to 1ms works! But without a timer it doesn't work.
+        qt.QTimer.singleShot(500, lambda : slicer.util.getModuleLogic("OpenLIFUHome").workflow.enforceGuidedModeVisibility(True))
+
     def setupNodes(self):
         self.logic.setup3DView()
         self.logic.setupSliceViewers()
