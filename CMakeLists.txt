@@ -112,6 +112,7 @@ option(Slicer_BUILD_SurfaceToolbox              "Build application with SurfaceT
 set(Slicer_CLIMODULES_ENABLED
   ResampleDTIVolume             # Needed by ResampleScalarVectorDWIVolume
   ResampleScalarVectorDWIVolume # Depends on DiffusionApplications, needed by CropVolume
+  FiducialRegistration          # Needed for transducer tracking wizard
   )
 set(Slicer_QTLOADABLEMODULES_ENABLED
   )
