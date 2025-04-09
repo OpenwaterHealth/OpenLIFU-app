@@ -68,7 +68,7 @@ endif()
 if(WIN32)
   # Note: To avoid escaping issue, make sure to use forward slash when setting
   #       "Slicer_CPACK_NSIS_INSTALL_ROOT". It is replaced by "\\\\" in SlicerCPack.
-  set(Slicer_CPACK_NSIS_INSTALL_REQUIRES_ADMIN_ACCOUNT ON)
+  set(Slicer_CPACK_NSIS_INSTALL_REQUIRES_ADMIN_ACCOUNT OFF)
   if(Slicer_CPACK_NSIS_INSTALL_REQUIRES_ADMIN_ACCOUNT)
     # User has administrative privileges, therefore we can install to shared folder
     # "C:\Program Files" or "C:\Program Files (x86)".
