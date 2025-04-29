@@ -47,12 +47,13 @@ class Home(ScriptedLoadableModule):
             openLIFULoginLogic.start_user_account_mode()
         slicer.app.connect("startupCompleted()", start_user_account_mode)
 
-        def ensure_database_exists():
+        def ensure_database_exists_and_attempt_connect():
+            openLIFUDatabaseWidget = slicer.util.getModuleWidget("OpenLIFUDatabase")
             openLIFUDatabaseLogic = slicer.util.getModuleLogic("OpenLIFUDatabase")
 
             # 1) Check if the path was set to something. If the setting points
-            # to a directory that exists and is an openlifu database, we don't
-            # do anything.
+            # to a directory that exists and is an openlifu database, we attempt
+            # to connect silently and then return
             qsettings = qt.QSettings()
             qsettings.beginGroup("OpenLIFU")
             db_setting = qsettings.value("databaseDirectory", "")
@@ -60,15 +61,15 @@ class Home(ScriptedLoadableModule):
             
             db_setting = Path(db_setting)
             if db_setting.exists() and db_setting.is_dir() and openLIFUDatabaseLogic.path_is_openlifu_database_root(db_setting):
+                openLIFUDatabaseWidget.onLoadDatabaseClicked(checked=True)
                 return
 
             # 2) Check if the default location has a database. If it does, we
-            # set the qsetting, back to default, and then we return
+            # set the qsetting back to default, and then we return
             db_default = openLIFUDatabaseLogic.get_database_destination()
             if db_default.exists() and db_default.is_dir() and openLIFUDatabaseLogic.path_is_openlifu_database_root(db_default):
-                qsettings.beginGroup("OpenLIFU")
-                qsettings.setValue("databaseDirectory", str(db_default))
-                qsettings.endGroup()
+                openLIFUDatabaseLogic.getParameterNode().databaseDirectory = Path(db_default)
+                openLIFUDatabaseWidget.onLoadDatabaseClicked(checked=True)
                 return
 
             # 3) If nothing above is satisfied, we ask if the user wants to
@@ -78,11 +79,10 @@ class Home(ScriptedLoadableModule):
                 return  # don't do anything. The admin can do things themself
 
             openLIFUDatabaseLogic.copy_preinitialized_database(db_default)
-            qsettings.beginGroup("OpenLIFU")
-            qsettings.setValue("databaseDirectory", str(db_default))
-            qsettings.endGroup()
+            openLIFUDatabaseLogic.getParameterNode().databaseDirectory = Path(db_default)
+            openLIFUDatabaseWidget.onLoadDatabaseClicked(checked=True)
 
-        slicer.app.connect("startupCompleted()", ensure_database_exists)
+        slicer.app.connect("startupCompleted()", ensure_database_exists_and_attempt_connect)
 
 class HomeWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     """Uses ScriptedLoadableModuleWidget base class, available at:
