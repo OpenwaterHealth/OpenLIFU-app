@@ -165,7 +165,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/OpenwaterHealth/SlicerOpenLIFU.git
- GIT_TAG        076dacf36a397e9f9f22040f1df6f594d5a41cb6
+ GIT_TAG        v1.3.0
  GIT_PROGRESS   1
  QUIET
  )
