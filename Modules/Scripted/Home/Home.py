@@ -127,6 +127,9 @@ class HomeWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
         # For me, even setting this timer to 1ms works! But without a timer it doesn't work.
         qt.QTimer.singleShot(500, lambda : slicer.util.getModuleLogic("OpenLIFUHome").workflow.enforceGuidedModeVisibility(True))
 
+        # Call routine that ends up showing login module banners
+        qt.QTimer.singleShot(1, lambda : slicer.util.getModuleWidget('OpenLIFULogin').onParameterNodeModified(None, None))
+
     def setupNodes(self):
         self.logic.setup3DView()
         self.logic.setupSliceViewers()
