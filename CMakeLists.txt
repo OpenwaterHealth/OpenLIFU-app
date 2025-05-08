@@ -34,7 +34,7 @@ set(Slicer_MAIN_PROJECT "OpenLIFUApp")
 
 # Set organization
 set(Slicer_ORGANIZATION_DOMAIN "openwater.health")
-set(Slicer_ORGANIZATION_NAME   "Open Water Internet, Inc.")
+set(Slicer_ORGANIZATION_NAME   "Openwater")
 
 # Default home and favorite modules
 set(Slicer_DEFAULT_HOME_MODULE "Home")
