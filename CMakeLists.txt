@@ -159,6 +159,18 @@ FetchContent_Populate(${extension_name}
 message(STATUS "Remote - ${extension_name} [OK]")
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR}/Modules/Scripted/SlicerCustomAppUtilities)
 
+# Bundle the SurfaceToolbox extension (contains Dynamic Modeler)
+set(extension_name "SurfaceToolbox")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY https://github.com/Slicer/SlicerSurfaceToolbox.git
+  GIT_TAG        e8b8f70930883adb6f4a227ad9d7339d20120f2c # The version used in Slicer v5.8.1
+  GIT_PROGRESS   1
+  QUIET
+)
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
 # Bundle the SlicerOpenLIFU extension
 set(extension_name "SlicerOpenLIFU")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
