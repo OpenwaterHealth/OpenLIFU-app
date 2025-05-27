@@ -84,6 +84,8 @@ class Home(ScriptedLoadableModule):
 
         slicer.app.connect("startupCompleted()", ensure_database_exists_and_attempt_connect)
 
+        slicer.app.connect("startupCompleted()", lambda : slicer.util.getModuleLogic("OpenLIFUHome").workflow_jump_ahead())
+
 class HomeWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     """Uses ScriptedLoadableModuleWidget base class, available at:
     https://github.com/Slicer/Slicer/blob/main/Base/Python/slicer/ScriptedLoadableModule.py
