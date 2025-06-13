@@ -84,6 +84,12 @@ class Home(ScriptedLoadableModule):
 
         slicer.app.connect("startupCompleted()", ensure_database_exists_and_attempt_connect)
 
+        def set_3d_view_background_to_black():
+            # find the qMRMLThreeDViewControllerWidget which has the slot setBlackBackground()
+            slicer.app.layoutManager().threeDWidget(0).threeDController().setBlackBackground()
+
+        slicer.app.connect("startupCompleted()", set_3d_view_background_to_black)
+
         slicer.app.connect("startupCompleted()", lambda : slicer.util.getModuleLogic("OpenLIFUHome").workflow_jump_ahead())
 
 class HomeWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
