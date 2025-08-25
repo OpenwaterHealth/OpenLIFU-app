@@ -84,11 +84,16 @@ class Home(ScriptedLoadableModule):
 
         slicer.app.connect("startupCompleted()", ensure_database_exists_and_attempt_connect)
 
-        def set_3d_view_background_to_black():
-            # find the qMRMLThreeDViewControllerWidget which has the slot setBlackBackground()
-            slicer.app.layoutManager().threeDWidget(0).threeDController().setBlackBackground()
+        def configure_views():
+            threeDController = slicer.app.layoutManager().threeDWidget(0).threeDController()
+            threeDController.setBlackBackground()
+            threeDController.set3DAxisVisible(False)
+            threeDController.set3DAxisLabelVisible(False)
 
-        slicer.app.connect("startupCompleted()", set_3d_view_background_to_black)
+            for sliceNode in slicer.util.getNodesByClass("vtkMRMLSliceNode"):
+                sliceNode.SliceEdgeVisibility3DOff()
+
+        slicer.app.connect("startupCompleted()", configure_views)
 
         slicer.app.connect("startupCompleted()", lambda : slicer.util.getModuleLogic("OpenLIFUHome").workflow_jump_ahead())
 
