@@ -25,3 +25,29 @@ slicerMacroBuildScriptedModule(
   RESOURCES ${MODULE_PYTHON_RESOURCES}
   )
 
+#-----------------------------------------------------------------------------
+set(_download_assets_script "${CMAKE_CURRENT_BINARY_DIR}/openlifu_download_assets.py")
+
+file(WRITE ${_download_assets_script} [==[
+import openlifu
+openlifu.util.assets.download_and_install_modnet()
+openlifu.util.assets.download_and_install_kwave_assets()
+]==])
+
+set(_download_assets_sentinel_script "${CMAKE_CURRENT_BINARY_DIR}/openlifu_download_assets.done")
+
+add_custom_command(
+  DEPENDS
+    OpenLIFUConfigureLauncher
+    ${_download_assets_script}
+  OUTPUT
+    ${_download_assets_sentinel_script}
+  COMMAND ${PYTHON_EXECUTABLE} ${_download_assets_script}
+  COMMAND ${CMAKE_COMMAND} -E touch ${_download_assets_sentinel_script}
+  COMMENT "Downloading external assets needed by openlifu"
+)
+
+add_custom_target(OpenLIFUDownloadAssets ALL
+  DEPENDS
+    ${_download_assets_sentinel_script}
+)
