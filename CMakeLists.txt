@@ -177,7 +177,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/OpenwaterHealth/SlicerOpenLIFU.git
- GIT_TAG        v1.10.0
+ GIT_TAG        7744787828193c2d9e75b6f2243f1ab9d3da2347
  GIT_PROGRESS   1
  QUIET
  )
@@ -185,7 +185,7 @@ message(STATUS "Remote - ${extension_name} [OK]")
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 # Add python requirements for SlicerOpenLIFU
-list(APPEND Slicer_ADDITIONAL_DEPENDENCIES python-sliceropenlifu-requirements)
+list(APPEND Slicer_ADDITIONAL_DEPENDENCIES python-sliceropenlifu-requirements download-openlifu-assets)
 
 # Add Slicer sources
 add_subdirectory(${slicersources_SOURCE_DIR} ${slicersources_BINARY_DIR})
