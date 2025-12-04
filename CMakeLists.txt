@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16.3)
+cmake_minimum_required(VERSION 3.20.6)
 
 # Enable C++14
 if(NOT DEFINED CMAKE_CXX_STANDARD)
@@ -15,7 +15,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/Slicer/Slicer
-    GIT_TAG        11eaf62e5a70b828021ff8beebbdd14d10d4f51c
+    GIT_TAG        a2b6d082be04274a849884fbb1e85634a9df90fb # v5.10.0
     GIT_PROGRESS   1
     )
 else()
@@ -165,7 +165,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY https://github.com/Slicer/SlicerSurfaceToolbox.git
-  GIT_TAG        e8b8f70930883adb6f4a227ad9d7339d20120f2c # The version used in Slicer v5.8.1
+  GIT_TAG        1e3a3633ef090ec2df83cc48d447ba1ae66265b6 # The version used in Slicer v5.10.0
   GIT_PROGRESS   1
   QUIET
 )
