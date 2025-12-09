@@ -15,7 +15,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/Slicer/Slicer
-    GIT_TAG        a2b6d082be04274a849884fbb1e85634a9df90fb # v5.10.0
+    GIT_TAG        868bf4ac411698c05bd746f149f7e7086f6002cb 
     GIT_PROGRESS   1
     )
 else()
