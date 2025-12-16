@@ -7,10 +7,10 @@ set(VERSION_MAJOR
   1
   )
 set(VERSION_MINOR
-  5
+  6
   )
 set(VERSION_PATCH
-  2
+  0
   )
 
 set(DESCRIPTION_SUMMARY
